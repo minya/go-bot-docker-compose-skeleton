@@ -1,0 +1,4 @@
+hostname=<yourbotdomain.com>
+botname=<yourbotname>
+bottoken=<telegrambottoken>
+sources_url=<https://github.com/path>

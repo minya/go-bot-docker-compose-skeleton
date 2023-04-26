@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  caddy:
+    image: caddy
+    container_name: caddy
+    restart: always
+    command: caddy reverse-proxy --from "${hostname}" --to "${botname}":8080 --debug
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - botonet
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+
+  bot:
+    build:
+      context:  "${botname}-build/"
+      args:
+        - botname=${botname}
+        - bottoken=${bottoken}
+        - sources_url=${sources_url}
+    image: "${botname}_img:latest"
+    container_name: "${botname}"
+    command: "./${botname} -logpath log -token ${bottoken} -port 8080"
+    restart: always
+    networks:
+      - botonet
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  botonet:
+    driver: bridge
